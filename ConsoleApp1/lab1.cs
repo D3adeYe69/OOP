@@ -1,31 +1,31 @@
-
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
-
 
 public class TraitData
 {
-    public List<Input> input { get; set; }
+    public List<Individual> input { get; set; }
 }
 
-public class Input
+public class Individual
 {
     public int id { get; set; }
-    public bool? isHumanoid { get; set; } // Nullable to handle cases where it's not provided
+    public bool? isHumanoid { get; set; }
     public string planet { get; set; }
-    public int? age { get; set; } // Nullable to handle cases where it's not provided
-    public List<string> traits { get; set; } // Nullable for cases where traits may not exist
+    public int? age { get; set; }
+    public List<string> traits { get; set; }
 }
-
-
 
 public class JsonReader
 {
     public TraitData ReadJson(string filePath)
     {
-        // Read the JSON file
+
         string jsonString = File.ReadAllText(filePath);
 
-        // Deserialize the JSON into the TraitData object
+
         TraitData traitData = JsonSerializer.Deserialize<TraitData>(jsonString);
 
         return traitData;
@@ -44,8 +44,33 @@ public class JsonReader
             Console.WriteLine();
         }
     }
-}
 
+    public void DisplayFilteredData(TraitData traitData, bool filterEven)
+    {
+
+        var filteredIndividuals = traitData.input
+            .Where(i => filterEven ? i.id % 2 == 0 : i.id % 2 != 0);
+
+
+        Console.WriteLine($"Filtered Individuals (ID is {(filterEven ? "Even" : "Odd")}):");
+        foreach (var individual in filteredIndividuals)
+        {
+            Console.WriteLine($"ID: {individual.id}");
+        }
+    }
+    public void DisplayAges(TraitData traitData)
+    {
+        Console.WriteLine("Ages of Individuals:");
+        foreach (var individual in traitData.input)
+        {
+
+            if (individual.age.HasValue)
+            {
+                Console.WriteLine($"ID: {individual.id}, Age: {individual.age}");
+            }
+        }
+    }
+}
 
 
 class Program
@@ -56,13 +81,20 @@ class Program
         string filePath = @"C:\Users\37367\Desktop\OOP\ConsoleApp1\resources\input.json";
 
 
-        // Create an instance of JsonReader
         JsonReader jsonReader = new JsonReader();
 
-        // Read the JSON file
+
         TraitData traitData = jsonReader.ReadJson(filePath);
 
-        // Display the data
+
         jsonReader.DisplayData(traitData);
+
+
+        jsonReader.DisplayFilteredData(traitData, true);
+
+
+        jsonReader.DisplayFilteredData(traitData, false);
+
+        jsonReader.DisplayAges(traitData);
     }
 }
