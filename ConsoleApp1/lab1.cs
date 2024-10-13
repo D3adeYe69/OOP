@@ -1,37 +1,68 @@
-using System;
 
-public class Individual
+using System.Text.Json;
+
+
+public class TraitData
 {
-    public bool IsHumanoid { get; private set; }
-    public string Planet { get; private set; }
-    public int Age { get; private set; }
-    public string[] Traits { get; private set; }
+    public List<Input> input { get; set; }
+}
 
-    // Constructor for Individual class
-    public Individual(bool isHumanoid, string planet, int age, string[] traits)
+public class Input
+{
+    public int id { get; set; }
+    public bool? isHumanoid { get; set; } // Nullable to handle cases where it's not provided
+    public string planet { get; set; }
+    public int? age { get; set; } // Nullable to handle cases where it's not provided
+    public List<string> traits { get; set; } // Nullable for cases where traits may not exist
+}
+
+
+
+public class JsonReader
+{
+    public TraitData ReadJson(string filePath)
     {
-        IsHumanoid = isHumanoid;
-        Planet = planet;
-        Age = age;
-        Traits = traits;
+        // Read the JSON file
+        string jsonString = File.ReadAllText(filePath);
+
+        // Deserialize the JSON into the TraitData object
+        TraitData traitData = JsonSerializer.Deserialize<TraitData>(jsonString);
+
+        return traitData;
     }
 
-    public void DisplayInfo()
+    public void DisplayData(TraitData traitData)
     {
-        Console.WriteLine($"Humanoid: {IsHumanoid}, Planet: {Planet}, Age: {Age}, Traits: {string.Join(", ", Traits)}");
+        // Output the data
+        foreach (var input in traitData.input)
+        {
+            Console.WriteLine($"ID: {input.id}");
+            Console.WriteLine($"Is Humanoid: {input.isHumanoid}");
+            Console.WriteLine($"Planet: {input.planet}");
+            Console.WriteLine($"Age: {input.age}");
+            Console.WriteLine($"Traits: {string.Join(", ", input.traits ?? new List<string>())}");
+            Console.WriteLine();
+        }
     }
 }
 
+
+
 class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
-        // Test 1: Creating an individual (example: Asgardian)
-        Individual asgardian = new Individual(true, "Asgard", 1500, new string[] { "BLONDE", "TALL" });
-        asgardian.DisplayInfo();
+        // Path to your JSON file
+        string filePath = @"C:\Users\37367\Desktop\OOP\ConsoleApp1\resources\input.json";
 
-        // Test 2: Creating another individual (example: Wookie)
-        Individual wookie = new Individual(false, "Kashyyyk", 300, new string[] { "HAIRY", "TALL" });
-        wookie.DisplayInfo();
+
+        // Create an instance of JsonReader
+        JsonReader jsonReader = new JsonReader();
+
+        // Read the JSON file
+        TraitData traitData = jsonReader.ReadJson(filePath);
+
+        // Display the data
+        jsonReader.DisplayData(traitData);
     }
 }
