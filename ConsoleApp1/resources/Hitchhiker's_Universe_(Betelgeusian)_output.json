@@ -1,0 +1,40 @@
+[
+  {
+    "id": 3,
+    "isHumanoid": true,
+    "planet": "Betelgeuse",
+    "age": 59,
+    "traits": [
+      "EXTRA_ARMS",
+      "EXTRA_HEAD"
+    ]
+  },
+  {
+    "id": 10,
+    "isHumanoid": null,
+    "planet": "Betelgeuse",
+    "age": 45,
+    "traits": [
+      "EXTRA_ARMS",
+      "EXTRA_HEAD"
+    ]
+  },
+  {
+    "id": 17,
+    "isHumanoid": null,
+    "planet": null,
+    "age": 26,
+    "traits": [
+      "EXTRA_ARMS"
+    ]
+  },
+  {
+    "id": 21,
+    "isHumanoid": null,
+    "planet": null,
+    "age": 82,
+    "traits": [
+      "EXTRA_HEAD"
+    ]
+  }
+]

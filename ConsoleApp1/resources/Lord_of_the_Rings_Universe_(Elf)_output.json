@@ -1,0 +1,29 @@
+[
+  {
+    "id": 5,
+    "isHumanoid": true,
+    "planet": "Earth",
+    "age": 451,
+    "traits": [
+      "BLONDE",
+      "POINTY_EARS"
+    ]
+  },
+  {
+    "id": 12,
+    "isHumanoid": true,
+    "planet": null,
+    "age": 7523,
+    "traits": null
+  },
+  {
+    "id": 19,
+    "isHumanoid": true,
+    "planet": "Earth",
+    "age": 451,
+    "traits": [
+      "BLONDE",
+      "TALL"
+    ]
+  }
+]

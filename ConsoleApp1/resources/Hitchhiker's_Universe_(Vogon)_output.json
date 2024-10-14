@@ -1,0 +1,30 @@
+[
+  {
+    "id": 4,
+    "isHumanoid": false,
+    "planet": "Vogsphere",
+    "age": 128,
+    "traits": [
+      "GREEN",
+      "BULKY"
+    ]
+  },
+  {
+    "id": 11,
+    "isHumanoid": false,
+    "planet": null,
+    "age": 128,
+    "traits": [
+      "GREEN"
+    ]
+  },
+  {
+    "id": 18,
+    "isHumanoid": false,
+    "planet": null,
+    "age": null,
+    "traits": [
+      "BULKY"
+    ]
+  }
+]

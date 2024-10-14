@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "isHumanoid": false,
+    "planet": "Endor",
+    "age": 34,
+    "traits": [
+      "HAIRY",
+      "SHORT"
+    ]
+  },
+  {
+    "id": 8,
+    "isHumanoid": false,
+    "planet": "Endor",
+    "age": 22,
+    "traits": null
+  },
+  {
+    "id": 15,
+    "isHumanoid": null,
+    "planet": "Endor",
+    "age": null,
+    "traits": null
+  }
+]
