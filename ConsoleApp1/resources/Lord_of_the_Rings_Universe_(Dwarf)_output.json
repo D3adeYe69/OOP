@@ -1,0 +1,31 @@
+[
+  {
+    "id": 6,
+    "isHumanoid": true,
+    "planet": "Earth",
+    "age": 124,
+    "traits": [
+      "SHORT",
+      "BULKY"
+    ]
+  },
+  {
+    "id": 13,
+    "isHumanoid": null,
+    "planet": "Earth",
+    "age": null,
+    "traits": [
+      "SHORT",
+      "BULKY"
+    ]
+  },
+  {
+    "id": 20,
+    "isHumanoid": true,
+    "planet": null,
+    "age": null,
+    "traits": [
+      "BULKY"
+    ]
+  }
+]

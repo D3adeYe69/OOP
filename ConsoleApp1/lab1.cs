@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 
@@ -122,6 +121,9 @@ public class JsonReader
 
     public void DisplayData(TraitData traitData)
     {
+        // Initialize dictionaries to hold classified individuals
+        var universeClassification = new Dictionary<string, List<View>>();
+
         foreach (var individual in traitData.input)
         {
             // Output the original data
@@ -133,17 +135,31 @@ public class JsonReader
 
             // Classify the individual and output the classification
             Character character = ClassifyIndividual(individual);
-            if (character != null)
+            string universeName = character?.GetRaceName() ?? "Unknown Universe";
+            Console.WriteLine($"Universe: {universeName}");
+
+            // Prepare the output view for each individual
+            var view = new View
             {
-                Console.WriteLine($"Universe: {character.GetRaceName()}");
-            }
-            else
+                id = individual.id,
+                isHumanoid = individual.isHumanoid,
+                planet = individual.planet,
+                age = individual.age,
+                traits = individual.traits
+            };
+
+            // Add to appropriate universe list
+            if (!universeClassification.ContainsKey(universeName))
             {
-                Console.WriteLine("Universe: Unknown Universe");
+                universeClassification[universeName] = new List<View>();
             }
+            universeClassification[universeName].Add(view);
 
             Console.WriteLine(); // For spacing
         }
+
+        // Write output to files based on universe classification
+        WriteOutputToFiles(universeClassification);
     }
 
     private Character ClassifyIndividual(Individual individual)
@@ -160,7 +176,6 @@ public class JsonReader
                 // Humanoid characters
                 if (!string.IsNullOrEmpty(individual.planet))
                 {
-
                     if (individual.planet == "Asgard") return new Asgardian();
                     if (individual.planet == "Earth")
                     {
@@ -171,7 +186,6 @@ public class JsonReader
                         }
                         return new Elf(); // Default to Elf for indefinite age
                     }
-
                     if (individual.planet == "Betelgeuse") return new Betelgeusian();
                 }
             }
@@ -206,7 +220,6 @@ public class JsonReader
                 {
                     return new Dwarf();
                 }
-
             }
         }
 
@@ -229,7 +242,6 @@ public class JsonReader
                 }
             }
 
-
             if ((individual.traits.Contains("HAIRY") || individual.traits.Contains("TALL")) && individual.age.HasValue && individual.age.Value <= 400) return new Wookie();
             if ((individual.traits.Contains("SHORT") || individual.traits.Contains("HAIRY")) && individual.age.HasValue && individual.age.Value <= 60) return new Ewok();
             if ((individual.traits.Contains("BLONDE") || individual.traits.Contains("TALL")) && individual.age.HasValue && individual.age.Value <= 5000) return new Asgardian();
@@ -237,24 +249,42 @@ public class JsonReader
             if ((individual.traits.Contains("GREEN") || individual.traits.Contains("BULKY")) && individual.age.HasValue && individual.age.Value <= 200) return new Vogon();
             if (individual.traits.Contains("BLONDE") || individual.traits.Contains("POINTY_EARS")) return new Elf();
             if ((individual.traits.Contains("SHORT") || individual.traits.Contains("BULKY")) && individual.age.HasValue && individual.age.Value <= 200) return new Dwarf();
-
         }
 
         return null; // No matching character found
     }
 
-
-    class Program
+    private void WriteOutputToFiles(Dictionary<string, List<View>> universeClassification)
     {
-        static void Main()
+        foreach (var entry in universeClassification)
         {
-            string filePath = @"C:\Users\37367\Desktop\OOP\ConsoleApp1\resources\input.json";
-
-            JsonReader jsonReader = new JsonReader();
-            TraitData traitData = jsonReader.ReadJson(filePath);
-
-            // Display the data along with classifications
-            jsonReader.DisplayData(traitData);
+            string universeName = entry.Key.Replace(" ", "_"); // Replace spaces with underscores for filename
+            string jsonOutput = JsonSerializer.Serialize(entry.Value, new JsonSerializerOptions { WriteIndented = true });
+            string outputPath = $@"C:\Users\37367\Desktop\OOP\ConsoleApp1\resources\{universeName}_output.json"; // Change the path as needed
+            File.WriteAllText(outputPath, jsonOutput);
         }
+    }
+}
+
+public class View
+{
+    public int id { get; set; }
+    public bool? isHumanoid { get; set; }
+    public string planet { get; set; }
+    public int? age { get; set; }
+    public List<string> traits { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = @"C:\Users\37367\Desktop\OOP\ConsoleApp1\resources\input.json";
+
+        JsonReader jsonReader = new JsonReader();
+        TraitData traitData = jsonReader.ReadJson(filePath);
+
+        // Display the data along with classifications
+        jsonReader.DisplayData(traitData);
     }
 }
