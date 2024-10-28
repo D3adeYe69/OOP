@@ -1,4 +1,8 @@
-﻿public class FileReader
+﻿using System;
+using System.IO;
+using System.Linq;
+
+public class FileReader
 {
     public string ReadFileIntoString(string path)
     {
@@ -8,7 +12,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error reading file: {ex.Message}");
+            Console.WriteLine($"Error reading file '{path}': {ex.Message}");
             return string.Empty;
         }
     }
@@ -53,6 +57,7 @@ public class TextData
     public override string ToString()
     {
         return $"Filename: {fileName}\n" +
+               $"Text: {text}\n" +  // Display the text content
                $"Text Length: {text.Length} characters\n" +
                $"Number of Vowels: {numberOfVowels}\n" +
                $"Number of Consonants: {numberOfConsonants}\n" +
@@ -68,24 +73,28 @@ class Program
     {
         if (args.Length < 1)
         {
-            Console.WriteLine("Please provide the name of the .txt file.");
+            Console.WriteLine("Please provide the name(s) of the .txt file(s).");
             return;
         }
-
-        string fileName = args[0];
-
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), fileName);
 
         FileReader fileReader = new FileReader();
-        string fileContent = fileReader.ReadFileIntoString(filePath);
 
-        if (string.IsNullOrEmpty(fileContent))
+        foreach (string fileName in args)
         {
-            Console.WriteLine("No content to process.");
-            return;
-        }
 
-        TextData textData = new TextData(fileName, fileContent);
-        Console.WriteLine(textData);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), fileName);
+
+            string fileContent = fileReader.ReadFileIntoString(filePath);
+
+            if (string.IsNullOrEmpty(fileContent))
+            {
+                Console.WriteLine($"No content to process for file: {fileName}");
+                continue;
+            }
+
+            TextData textData = new TextData(fileName, fileContent);
+            Console.WriteLine(textData);
+            Console.WriteLine();
+        }
     }
 }
