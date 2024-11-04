@@ -57,7 +57,7 @@ public class TextData
     public override string ToString()
     {
         return $"Filename: {fileName}\n" +
-               $"Text: {text}\n" +  // Display the text content
+               $"Text: {text}\n" +
                $"Text Length: {text.Length} characters\n" +
                $"Number of Vowels: {numberOfVowels}\n" +
                $"Number of Consonants: {numberOfConsonants}\n" +
