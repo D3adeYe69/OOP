@@ -17,21 +17,29 @@ public enum SyrupType
 public class Coffee
 {
     private Intensity _coffeeIntensity;
+
     public Intensity CoffeeIntensity
     {
         get => _coffeeIntensity;
         set => _coffeeIntensity = value;
     }
 
-    public const string Name = "Coffee";
-
     public Coffee(Intensity intensity)
     {
         _coffeeIntensity = intensity;
     }
 
-    public virtual void PrintDetails()
+    // Prevent overriding by marking as sealed
+    public void DisplayIntensity()
     {
-        Console.WriteLine($"Name: {Name}, Intensity: {CoffeeIntensity}");
+        Console.WriteLine($"Intensity set to {CoffeeIntensity}");
+    }
+
+    // Helper method for additional shared steps (if needed)
+    protected void AddMilk(int mlOfMilk)
+    {
+        Console.WriteLine($"Adding {mlOfMilk} mls of milk");
     }
 }
+
+

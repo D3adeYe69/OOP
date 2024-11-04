@@ -1,22 +1,18 @@
 public class Cappuccino : Coffee
 {
-    private int _mlOfMilk;
-    public int MlOfMilk
-    {
-        get => _mlOfMilk;
-        set => _mlOfMilk = value;
-    }
-
-    public const string CoffeeType = "Cappuccino";
+    private readonly int _mlOfMilk;
 
     public Cappuccino(Intensity intensity, int mlOfMilk) : base(intensity)
     {
         _mlOfMilk = mlOfMilk;
     }
 
-    public override void PrintDetails()
+    public Cappuccino MakeCappuccino()
     {
-        base.PrintDetails();
-        Console.WriteLine($"Type: {CoffeeType}, Milk: {MlOfMilk} ml");
+        Console.WriteLine("Making Cappuccino");
+        DisplayIntensity();
+        AddMilk(_mlOfMilk);
+
+        return this; // Return instance as per task requirements
     }
 }

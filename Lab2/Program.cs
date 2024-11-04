@@ -1,30 +1,14 @@
-﻿using System;
-
-namespace CoffeeShopApp
+﻿class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
+        var pumpkinSpiceLatte = new PumpkinSpiceLatte(Intensity.NORMAL, 100, 50);
+        pumpkinSpiceLatte.MakePumpkinSpiceLatte();
 
-            Coffee coffee = new Coffee(Intensity.NORMAL);
-            coffee.PrintDetails();
+        var cappuccino = new Cappuccino(Intensity.STRONG, 150);
+        cappuccino.MakeCappuccino();
 
-
-            Cappuccino cappuccino = new Cappuccino(Intensity.STRONG, 150);
-            cappuccino.PrintDetails();
-
-
-            PumpkinSpiceLatte pumpkinLatte = new PumpkinSpiceLatte(Intensity.NORMAL, 100, 30);
-            pumpkinLatte.PrintDetails();
-
-
-            Americano americano = new Americano(Intensity.LIGHT, 200);
-            americano.PrintDetails();
-
-
-            SyrupCappuccino syrupCappuccino = new SyrupCappuccino(Intensity.NORMAL, 120, SyrupType.CARAMEL);
-            syrupCappuccino.PrintDetails();
-        }
+        var americano = new Americano(Intensity.LIGHT, 200);
+        americano.MakeAmericano();
     }
 }

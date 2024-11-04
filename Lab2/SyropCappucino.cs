@@ -1,23 +1,22 @@
-public class SyrupCappuccino : Cappuccino
+public class SyrupCappuccino : Coffee
 {
-    private SyrupType _syrup;
-    public SyrupType Syrup
-    {
-        get => _syrup;
-        set => _syrup = value;
-    }
-
-    public const string CoffeeType = "SyrupCappuccino";
+    private readonly int _mlOfMilk;
+    private readonly SyrupType _syrup;
 
     public SyrupCappuccino(Intensity intensity, int mlOfMilk, SyrupType syrup)
-        : base(intensity, mlOfMilk)
+        : base(intensity)
     {
+        _mlOfMilk = mlOfMilk;
         _syrup = syrup;
     }
 
-    public override void PrintDetails()
+    public SyrupCappuccino MakeSyrupCappuccino()
     {
-        base.PrintDetails();
-        Console.WriteLine($"Type: {CoffeeType}, Milk: {MlOfMilk} ml, Syrup: {Syrup}");
+        Console.WriteLine("Making Syrup Cappuccino");
+        DisplayIntensity();
+        AddMilk(_mlOfMilk);
+        Console.WriteLine($"Adding syrup: {_syrup}");
+
+        return this;
     }
 }

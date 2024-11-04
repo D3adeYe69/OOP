@@ -1,23 +1,22 @@
-public class PumpkinSpiceLatte : Cappuccino
+public class PumpkinSpiceLatte : Coffee
 {
-    private int _mgOfPumpkinSpice;
-    public int MgOfPumpkinSpice
-    {
-        get => _mgOfPumpkinSpice;
-        set => _mgOfPumpkinSpice = value;
-    }
-
-    public const string CoffeeType = "PumpkinSpiceLatte";
+    private readonly int _mlOfMilk;
+    private readonly int _mgOfPumpkinSpice;
 
     public PumpkinSpiceLatte(Intensity intensity, int mlOfMilk, int mgOfPumpkinSpice)
-        : base(intensity, mlOfMilk)
+        : base(intensity)
     {
+        _mlOfMilk = mlOfMilk;
         _mgOfPumpkinSpice = mgOfPumpkinSpice;
     }
 
-    public override void PrintDetails()
+    public PumpkinSpiceLatte MakePumpkinSpiceLatte()
     {
-        base.PrintDetails();
-        Console.WriteLine($"Type: {CoffeeType}, Milk: {MlOfMilk} ml, Pumpkin Spice: {MgOfPumpkinSpice} mg");
+        Console.WriteLine("Making Pumpkin Spice Latte");
+        DisplayIntensity();
+        AddMilk(_mlOfMilk);
+        Console.WriteLine($"Adding {_mgOfPumpkinSpice} mls of pumpkin spice");
+
+        return this;
     }
 }

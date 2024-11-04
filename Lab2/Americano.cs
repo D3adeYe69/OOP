@@ -1,22 +1,18 @@
 public class Americano : Coffee
 {
-    private int _mlOfWater;
-    public int MlOfWater
-    {
-        get => _mlOfWater;
-        set => _mlOfWater = value;
-    }
-
-    public const string CoffeeType = "Americano";
+    private readonly int _mlOfWater;
 
     public Americano(Intensity intensity, int mlOfWater) : base(intensity)
     {
         _mlOfWater = mlOfWater;
     }
 
-    public override void PrintDetails()
+    public Americano MakeAmericano()
     {
-        base.PrintDetails();
-        Console.WriteLine($"Type: {CoffeeType}, Water: {MlOfWater} ml");
+        Console.WriteLine("Making Americano");
+        DisplayIntensity();
+        Console.WriteLine($"Adding {_mlOfWater} mls of water");
+
+        return this;
     }
 }
