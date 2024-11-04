@@ -29,4 +29,9 @@ public class Coffee
     {
         _coffeeIntensity = intensity;
     }
+
+    public virtual void PrintDetails()
+    {
+        Console.WriteLine($"Name: {Name}, Intensity: {CoffeeIntensity}");
+    }
 }

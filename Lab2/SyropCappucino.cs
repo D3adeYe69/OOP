@@ -14,4 +14,10 @@ public class SyrupCappuccino : Cappuccino
     {
         _syrup = syrup;
     }
+
+    public override void PrintDetails()
+    {
+        base.PrintDetails();
+        Console.WriteLine($"Type: {CoffeeType}, Milk: {MlOfMilk} ml, Syrup: {Syrup}");
+    }
 }

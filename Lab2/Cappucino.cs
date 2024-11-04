@@ -13,4 +13,10 @@ public class Cappuccino : Coffee
     {
         _mlOfMilk = mlOfMilk;
     }
+
+    public override void PrintDetails()
+    {
+        base.PrintDetails();
+        Console.WriteLine($"Type: {CoffeeType}, Milk: {MlOfMilk} ml");
+    }
 }

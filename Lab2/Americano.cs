@@ -13,4 +13,10 @@ public class Americano : Coffee
     {
         _mlOfWater = mlOfWater;
     }
+
+    public override void PrintDetails()
+    {
+        base.PrintDetails();
+        Console.WriteLine($"Type: {CoffeeType}, Water: {MlOfWater} ml");
+    }
 }

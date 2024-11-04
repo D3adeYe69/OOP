@@ -14,4 +14,10 @@ public class PumpkinSpiceLatte : Cappuccino
     {
         _mgOfPumpkinSpice = mgOfPumpkinSpice;
     }
+
+    public override void PrintDetails()
+    {
+        base.PrintDetails();
+        Console.WriteLine($"Type: {CoffeeType}, Milk: {MlOfMilk} ml, Pumpkin Spice: {MgOfPumpkinSpice} mg");
+    }
 }
