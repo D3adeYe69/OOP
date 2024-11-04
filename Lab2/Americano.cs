@@ -1,4 +1,5 @@
-public class Americano : Coffee
+// Americano.cs
+internal class Americano : Coffee
 {
     private readonly int _mlOfWater;
 
@@ -7,12 +8,10 @@ public class Americano : Coffee
         _mlOfWater = mlOfWater;
     }
 
-    public Americano MakeAmericano()
+    public void MakeAmericano()
     {
-        Console.WriteLine("Making Americano");
+        Console.WriteLine("\nMaking Americano");
         DisplayIntensity();
-        Console.WriteLine($"Adding {_mlOfWater} mls of water");
-
-        return this;
+        Console.WriteLine($"Adding {_mlOfWater} ml of water");
     }
 }

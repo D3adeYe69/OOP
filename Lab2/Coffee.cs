@@ -1,9 +1,11 @@
+// Coffee.cs
 public enum Intensity
 {
     LIGHT,
     NORMAL,
     STRONG
 }
+
 public enum SyrupType
 {
     MACADAMIA,
@@ -14,7 +16,7 @@ public enum SyrupType
     POPCORN
 }
 
-public class Coffee
+internal class Coffee
 {
     private Intensity _coffeeIntensity;
 
@@ -29,17 +31,10 @@ public class Coffee
         _coffeeIntensity = intensity;
     }
 
-    // Prevent overriding by marking as sealed
     public void DisplayIntensity()
     {
         Console.WriteLine($"Intensity set to {CoffeeIntensity}");
     }
 
-    // Helper method for additional shared steps (if needed)
-    protected void AddMilk(int mlOfMilk)
-    {
-        Console.WriteLine($"Adding {mlOfMilk} mls of milk");
-    }
+
 }
-
-

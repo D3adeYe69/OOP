@@ -1,4 +1,5 @@
-public class Cappuccino : Coffee
+// Cappuccino.cs
+internal class Cappuccino : Coffee
 {
     private readonly int _mlOfMilk;
 
@@ -7,12 +8,14 @@ public class Cappuccino : Coffee
         _mlOfMilk = mlOfMilk;
     }
 
-    public Cappuccino MakeCappuccino()
+    protected void AddMilk(int mlOfMilk)
     {
-        Console.WriteLine("Making Cappuccino");
+        Console.WriteLine($"Adding {mlOfMilk} ml of milk");
+    }
+    public void MakeCappuccino()
+    {
+        Console.WriteLine("\nMaking Cappuccino");
         DisplayIntensity();
         AddMilk(_mlOfMilk);
-
-        return this; // Return instance as per task requirements
     }
 }

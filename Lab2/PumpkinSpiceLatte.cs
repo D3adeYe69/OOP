@@ -1,22 +1,21 @@
-public class PumpkinSpiceLatte : Coffee
+// PumpkinSpiceLatte.cs
+internal class PumpkinSpiceLatte : Cappuccino
 {
     private readonly int _mlOfMilk;
     private readonly int _mgOfPumpkinSpice;
 
     public PumpkinSpiceLatte(Intensity intensity, int mlOfMilk, int mgOfPumpkinSpice)
-        : base(intensity)
+        : base(intensity, mlOfMilk)
     {
         _mlOfMilk = mlOfMilk;
         _mgOfPumpkinSpice = mgOfPumpkinSpice;
     }
 
-    public PumpkinSpiceLatte MakePumpkinSpiceLatte()
+    public void MakePumpkinSpiceLatte()
     {
-        Console.WriteLine("Making Pumpkin Spice Latte");
+        Console.WriteLine("\nMaking Pumpkin Spice Latte");
         DisplayIntensity();
         AddMilk(_mlOfMilk);
-        Console.WriteLine($"Adding {_mgOfPumpkinSpice} mls of pumpkin spice");
-
-        return this;
+        Console.WriteLine($"Adding {_mgOfPumpkinSpice} mg of pumpkin spice");
     }
 }
