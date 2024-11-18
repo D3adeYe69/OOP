@@ -1,4 +1,3 @@
-// Coffee.cs
 public enum Intensity
 {
     LIGHT,
@@ -18,23 +17,15 @@ public enum SyrupType
 
 internal class Coffee
 {
-    private Intensity _coffeeIntensity;
-
-    public Intensity CoffeeIntensity
-    {
-        get => _coffeeIntensity;
-        set => _coffeeIntensity = value;
-    }
+    private readonly Intensity _coffeeIntensity;
 
     public Coffee(Intensity intensity)
     {
         _coffeeIntensity = intensity;
     }
 
-    public void DisplayIntensity()
+    public virtual void MakeRecipe()
     {
-        Console.WriteLine($"Intensity set to {CoffeeIntensity}");
+        Console.WriteLine($"Setting intensity to {_coffeeIntensity}");
     }
-
-
 }

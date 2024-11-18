@@ -1,4 +1,3 @@
-// Americano.cs
 internal class Americano : Coffee
 {
     private readonly int _mlOfWater;
@@ -8,10 +7,15 @@ internal class Americano : Coffee
         _mlOfWater = mlOfWater;
     }
 
+    public override void MakeRecipe()
+    {
+        base.MakeRecipe();
+        Console.WriteLine($"Adding {_mlOfWater} ml of water");
+    }
+
     public void MakeAmericano()
     {
         Console.WriteLine("\nMaking Americano");
-        DisplayIntensity();
-        Console.WriteLine($"Adding {_mlOfWater} ml of water");
+        MakeRecipe();
     }
 }

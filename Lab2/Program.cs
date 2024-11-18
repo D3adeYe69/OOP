@@ -1,7 +1,4 @@
-﻿// Program.cs
-using System;
-using System.Collections.Generic;
-
+﻿
 class Program
 {
     static void Main(string[] args)
@@ -9,6 +6,7 @@ class Program
         Barista barista = new Barista();
         List<CoffeeOrder> coffeeOrders = new List<CoffeeOrder>();
         string moreOrders = "yes";
+
 
         do
         {
@@ -55,7 +53,7 @@ class Program
 
         } while (moreOrders == "yes");
 
-        // Pass the orders to the Barista to prepare them
+
         barista.MakeCoffees(coffeeOrders);
     }
 

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 internal class Barista
 {
     public void MakeCoffees(List<CoffeeOrder> coffeeOrders)
@@ -13,27 +10,27 @@ internal class Barista
             {
                 case "Cappuccino":
                     coffee = new Cappuccino(order.Intensity, order.MlOfMilk);
-                    ((Cappuccino)coffee).MakeCappuccino(); // Directly call the method
+                    ((Cappuccino)coffee).MakeCappuccino();
                     break;
 
                 case "Pumpkin Spice Latte":
                     coffee = new PumpkinSpiceLatte(order.Intensity, order.MlOfMilk, order.MgOfPumpkinSpice);
-                    ((PumpkinSpiceLatte)coffee).MakePumpkinSpiceLatte(); // Directly call the method
+                    ((PumpkinSpiceLatte)coffee).MakePumpkinSpiceLatte();
                     break;
 
                 case "Americano":
                     coffee = new Americano(order.Intensity, order.MlOfWater);
-                    ((Americano)coffee).MakeAmericano(); // Directly call the method
+                    ((Americano)coffee).MakeAmericano();
                     break;
 
                 case "Syrup Cappuccino":
                     coffee = new SyrupCappuccino(order.Intensity, order.MlOfMilk, order.Syrup);
-                    ((SyrupCappuccino)coffee).MakeSyrupCappuccino(); // Directly call the method
+                    ((SyrupCappuccino)coffee).MakeSyrupCappuccino();
                     break;
 
                 default:
                     Console.WriteLine("Unknown coffee type.");
-                    continue; // Skip to the next iteration
+                    continue;
             }
         }
     }

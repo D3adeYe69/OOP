@@ -1,4 +1,3 @@
-// Cappuccino.cs
 internal class Cappuccino : Coffee
 {
     private readonly int _mlOfMilk;
@@ -8,14 +7,15 @@ internal class Cappuccino : Coffee
         _mlOfMilk = mlOfMilk;
     }
 
-    protected void AddMilk(int mlOfMilk)
+    public override void MakeRecipe()
     {
-        Console.WriteLine($"Adding {mlOfMilk} ml of milk");
+        base.MakeRecipe();
+        Console.WriteLine($"Adding {_mlOfMilk} ml of milk");
     }
+
     public void MakeCappuccino()
     {
         Console.WriteLine("\nMaking Cappuccino");
-        DisplayIntensity();
-        AddMilk(_mlOfMilk);
+        MakeRecipe();
     }
 }
