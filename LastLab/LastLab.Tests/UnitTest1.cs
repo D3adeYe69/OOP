@@ -58,3 +58,39 @@ public class QueueTests
         Assert.AreEqual(2, queue.Count);
     }
 }
+
+[TestClass]
+public class DineableRefuelableTests
+{
+    [TestMethod]
+    public void TestPeopleDinner()
+    {
+        var dinner = new PeopleDinner();
+        dinner.ServeDinner("1");
+        Assert.AreEqual(1, dinner.GetServedCount());
+    }
+
+    [TestMethod]
+    public void TestRobotDinner()
+    {
+        var dinner = new RobotDinner();
+        dinner.ServeDinner("1");
+        Assert.AreEqual(1, dinner.GetServedCount());
+    }
+
+    [TestMethod]
+    public void TestElectricStation()
+    {
+        var station = new ElectricStation();
+        station.Refuel("1");
+        Assert.AreEqual(1, station.GetChargedCount());
+    }
+
+    [TestMethod]
+    public void TestGasStation()
+    {
+        var station = new GasStation();
+        station.Refuel("1");
+        Assert.AreEqual(1, station.GetRefueledCount());
+    }
+}
