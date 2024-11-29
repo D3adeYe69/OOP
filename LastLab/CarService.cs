@@ -1,60 +1,49 @@
+
 public class CarStation
 {
-    private IDineable diningService;
-    private IRefuelable electricStation;
-    private IRefuelable gasStation;
-    private IQueue<Car> queue;
+    private readonly List<Car> cars = new List<Car>();
+    private readonly IRefuelable refuelStation;
+    private readonly IDineable dineStation;
 
-    public CarStation(IDineable diningService, IRefuelable electricStation, IRefuelable gasStation)
+    // Constructor accepts a refuelable and dineable station
+    public CarStation(IRefuelable refuelable, IDineable dineable)
     {
-        this.diningService = diningService;
-        this.electricStation = electricStation;
-        this.gasStation = gasStation;
-        queue = new ArrayQueue<Car>();  // Using the ArrayQueue implementation
+        refuelStation = refuelable;
+        dineStation = dineable;
     }
 
+    // Add a car to the station and perform necessary actions
     public void AddCar(Car car)
     {
-        queue.Enqueue(car);
+        cars.Add(car);
+        Console.WriteLine($"Car with ID {car.Id} added to the station.");
     }
 
+    // Serve cars at the station based on their type
     public void ServeCars()
     {
-        // Reset the served count of dinner
-        int servedDinnerCount = 0;
-        int gasRefueledCount = 0;   // Track gas cars refueled
-        int electricChargedCount = 0; // Track electric cars charged
-
-        while (!queue.IsEmpty())
+        foreach (var car in cars)
         {
-            Car car = queue.Dequeue();
-
-            // Debugging: print out car info
-            Console.WriteLine($"Processing car {car.Id} of type {car.Type}. Is Dining: {car.IsDining}");
+            if (car.Type == "GAS")
+            {
+                refuelStation.Refuel(car.Id.ToString());
+            }
+            else if (car.Type == "ELECTRIC")
+            {
+                refuelStation.Refuel(car.Id.ToString());
+            }
 
             if (car.IsDining)
             {
-                // Serving dinner if the car is marked as dining
-                diningService.ServeDinner(car.Id.ToString());
-                servedDinnerCount++;  // Track served dinners
-            }
-
-            // Refueling or charging cars based on their type
-            if (car.Type == "ELECTRIC")
-            {
-                electricStation.Refuel(car.Id.ToString());  // Charge electric cars
-                electricChargedCount++;  // Track electric cars charged
-            }
-            else if (car.Type == "GAS")
-            {
-                gasStation.Refuel(car.Id.ToString());  // Refuel gas cars
-                gasRefueledCount++;  // Track gas cars refueled
+                if (car.Type == "GAS")
+                {
+                    dineStation.ServeDinner(car.Id.ToString());
+                }
+                else if (car.Type == "ELECTRIC")
+                {
+                    dineStation.ServeDinner(car.Id.ToString());
+                }
             }
         }
-
-        // Output the counts for debugging
-        Console.WriteLine($"Total served dinners: {servedDinnerCount}");
-        Console.WriteLine($"Total gas cars refueled: {gasRefueledCount}");
-        Console.WriteLine($"Total electric cars charged: {electricChargedCount}");
     }
 }

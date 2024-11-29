@@ -1,3 +1,4 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public class QueueTests
 {
@@ -71,6 +72,83 @@ public class QueueTests
         Assert.AreEqual(2, queue.Count);
         Console.WriteLine("TestQueueOperations passed.");
     }
+
+    [TestMethod]
+    public void TestSemaphoreCarRouting()
+    {
+        // Setup stations
+        var peopleDinner = new PeopleDinner();
+        var robotDinner = new RobotDinner();
+        var gasStation = new GasStation();
+        var electricStation = new ElectricStation();
+
+        var gasCarStation = new CarStation(gasStation, peopleDinner);
+        var electricCarStation = new CarStation(electricStation, robotDinner);
+        var semaphore = new Semaphore(gasCarStation, electricCarStation, peopleDinner, robotDinner);
+
+        // Create test cars
+        var gasCar = new Car { Id = 1, Type = "GAS", Passengers = "PEOPLE", IsDining = true, Consumption = 50 };
+        var electricCar = new Car { Id = 2, Type = "ELECTRIC", Passengers = "ROBOTS", IsDining = true, Consumption = 40 };
+
+        // Guide cars to stations
+        semaphore.GuideCarToStation(gasCar);
+        semaphore.GuideCarToStation(electricCar);
+
+        // Verify queue counts
+        Assert.AreEqual(1, semaphore.GetGasQueueCount(), "Gas queue should have 1 car");
+        Assert.AreEqual(1, semaphore.GetElectricQueueCount(), "Electric queue should have 1 car");
+
+        // Process cars
+        semaphore.ServeCars();
+
+        // Verify final counts
+        Assert.AreEqual(1, gasStation.GetRefueledCount(), "One gas car should be refueled");
+        Assert.AreEqual(1, electricStation.GetChargedCount(), "One electric car should be charged");
+        Assert.AreEqual(1, peopleDinner.GetServedCount(), "People should be served dinner");
+        Assert.AreEqual(1, robotDinner.GetServedCount(), "Robots should be served dinner");
+    }
+
+    [TestMethod]
+    public void TestMultipleCarProcessing()
+    {
+        // Setup
+        var peopleDinner = new PeopleDinner();
+        var robotDinner = new RobotDinner();
+        var gasStation = new GasStation();
+        var electricStation = new ElectricStation();
+
+        var gasCarStation = new CarStation(gasStation, peopleDinner);
+        var electricCarStation = new CarStation(electricStation, robotDinner);
+        var semaphore = new Semaphore(gasCarStation, electricCarStation, peopleDinner, robotDinner);
+
+        // Create multiple test cars
+        var cars = new List<Car>
+        {
+            new Car { Id = 1, Type = "GAS", Passengers = "PEOPLE", IsDining = true, Consumption = 50 },
+            new Car { Id = 2, Type = "ELECTRIC", Passengers = "ROBOTS", IsDining = true, Consumption = 40 },
+            new Car { Id = 3, Type = "GAS", Passengers = "PEOPLE", IsDining = false, Consumption = 30 },
+            new Car { Id = 4, Type = "ELECTRIC", Passengers = "ROBOTS", IsDining = false, Consumption = 25 }
+        };
+
+        // Process all cars
+        foreach (var car in cars)
+        {
+            semaphore.GuideCarToStation(car);
+        }
+
+        // Verify queue counts before processing
+        Assert.AreEqual(2, semaphore.GetGasQueueCount(), "Gas queue should have 2 cars");
+        Assert.AreEqual(2, semaphore.GetElectricQueueCount(), "Electric queue should have 2 cars");
+
+        // Process all cars
+        semaphore.ServeCars();
+
+        // Verify final counts
+        Assert.AreEqual(2, gasStation.GetRefueledCount(), "Two gas cars should be refueled");
+        Assert.AreEqual(2, electricStation.GetChargedCount(), "Two electric cars should be charged");
+        Assert.AreEqual(1, peopleDinner.GetServedCount(), "One group of people should be served dinner");
+        Assert.AreEqual(1, robotDinner.GetServedCount(), "One group of robots should be served dinner");
+    }
 }
 
 [TestClass]
@@ -115,73 +193,37 @@ public class DineableRefuelableTests
         Assert.AreEqual(1, station.GetRefueledCount());
         Console.WriteLine("TestGasStation passed.");
     }
-}
 
-[TestClass]
-public class CarStationTests
-{
     [TestMethod]
-    public void TestServeCars_ProcessesAllCars()
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void TestSemaphoreNullCar()
     {
-        Console.WriteLine("Running TestServeCars_ProcessesAllCars...");
-
-        var diningService = new PeopleDinner();
-        var electricStation = new ElectricStation();
+        var peopleDinner = new PeopleDinner();
+        var robotDinner = new RobotDinner();
         var gasStation = new GasStation();
-        var carStation = new CarStation(diningService, electricStation, gasStation);
+        var electricStation = new ElectricStation();
 
-        carStation.AddCar(new Car { Id = 1, Type = "GAS", IsDining = true });
-        carStation.AddCar(new Car { Id = 2, Type = "ELECTRIC", IsDining = false });
-        carStation.AddCar(new Car { Id = 3, Type = "GAS", IsDining = true });
+        var gasCarStation = new CarStation(gasStation, peopleDinner);
+        var electricCarStation = new CarStation(electricStation, robotDinner);
+        var semaphore = new Semaphore(gasCarStation, electricCarStation, peopleDinner, robotDinner);
 
-        carStation.ServeCars();
-
-        Assert.AreEqual(2, diningService.GetServedCount());
-        Assert.AreEqual(2, gasStation.GetRefueledCount());
-        Assert.AreEqual(1, electricStation.GetChargedCount());
-
-        Console.WriteLine("TestServeCars_ProcessesAllCars passed.");
+        semaphore.GuideCarToStation(null);
     }
 
     [TestMethod]
-    public void TestServeCars_ServesDinnerIfIsDiningTrue()
+    [ExpectedException(typeof(ArgumentException))]
+    public void TestSemaphoreInvalidCarType()
     {
-        Console.WriteLine("Running TestServeCars_ServesDinnerIfIsDiningTrue...");
-
-        var diningService = new PeopleDinner();
-        var electricStation = new ElectricStation();
+        var peopleDinner = new PeopleDinner();
+        var robotDinner = new RobotDinner();
         var gasStation = new GasStation();
-        var carStation = new CarStation(diningService, electricStation, gasStation);
-
-        carStation.AddCar(new Car { Id = 1, Type = "GAS", IsDining = true });
-        carStation.AddCar(new Car { Id = 2, Type = "GAS", IsDining = false });
-
-        carStation.ServeCars();
-
-        Assert.AreEqual(1, diningService.GetServedCount());
-        Assert.AreEqual(2, gasStation.GetRefueledCount());
-
-        Console.WriteLine("TestServeCars_ServesDinnerIfIsDiningTrue passed.");
-    }
-
-    [TestMethod]
-    public void TestServeCars_RefuelsBasedOnCarType()
-    {
-        Console.WriteLine("Running TestServeCars_RefuelsBasedOnCarType...");
-
-        var diningService = new PeopleDinner();
         var electricStation = new ElectricStation();
-        var gasStation = new GasStation();
-        var carStation = new CarStation(diningService, electricStation, gasStation);
 
-        carStation.AddCar(new Car { Id = 1, Type = "ELECTRIC", IsDining = false });
-        carStation.AddCar(new Car { Id = 2, Type = "GAS", IsDining = false });
+        var gasCarStation = new CarStation(gasStation, peopleDinner);
+        var electricCarStation = new CarStation(electricStation, robotDinner);
+        var semaphore = new Semaphore(gasCarStation, electricCarStation, peopleDinner, robotDinner);
 
-        carStation.ServeCars();
-
-        Assert.AreEqual(1, electricStation.GetChargedCount());
-        Assert.AreEqual(1, gasStation.GetRefueledCount());
-
-        Console.WriteLine("TestServeCars_RefuelsBasedOnCarType passed.");
+        var invalidCar = new Car { Id = 1, Type = "DIESEL", Passengers = "PEOPLE", IsDining = true, Consumption = 50 };
+        semaphore.GuideCarToStation(invalidCar);
     }
 }
