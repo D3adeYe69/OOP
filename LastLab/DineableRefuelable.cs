@@ -10,30 +10,43 @@ public interface IRefuelable
 
 public class PeopleDinner : IDineable
 {
-    private int servedCount = 0;
+    private int totalPeople = 0;
+    private int servedPeople = 0;
+
+    public void AddPeople(int count)
+    {
+        totalPeople += count;
+    }
 
     public void ServeDinner(string carId)
     {
-        servedCount++;
-        Console.WriteLine($"Serving dinner to people in car {carId}");
+        servedPeople++;
     }
 
-    public int GetServedCount() => servedCount;
+    public int GetTotalPeopleCount() => totalPeople;
+    public int GetServedCount() => servedPeople;
+    public int GetNotDiningCount() => totalPeople - servedPeople;
 }
 
 public class RobotDinner : IDineable
 {
-    private int servedCount = 0;
+    private int totalRobots = 0;
+    private int servedRobots = 0;
+
+    public void AddRobots(int count)
+    {
+        totalRobots += count;
+    }
 
     public void ServeDinner(string carId)
     {
-        servedCount++;
-        Console.WriteLine($"Serving dinner to robots in car {carId}");
+        servedRobots++;
     }
 
-    public int GetServedCount() => servedCount;
+    public int GetTotalRobotCount() => totalRobots;
+    public int GetServedCount() => servedRobots;
+    public int GetNotDiningCount() => totalRobots - servedRobots;
 }
-
 public class ElectricStation : IRefuelable
 {
     private int carsCharged = 0;

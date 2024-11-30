@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LastLab
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             Console.WriteLine("Starting Main method...");
             var peopleDinner = new PeopleDinner();
@@ -15,98 +19,73 @@ namespace LastLab
             var gasStation = new GasStation();
             var electricStation = new ElectricStation();
 
-            // Create car stations with corresponding refueling and dining services
             var gasCarStation = new CarStation(gasStation, peopleDinner);
             var electricCarStation = new CarStation(electricStation, robotDinner);
-
-            // Initialize the Semaphore
             var semaphore = new Semaphore(gasCarStation, electricCarStation, peopleDinner, robotDinner);
 
-            // Process queue folder
-            ProcessQueueFolder(semaphore);
+            string currentDir = Directory.GetCurrentDirectory();
+            string projectDir = Path.GetFullPath(Path.Combine(currentDir, "..", "..", ".."));
+            string queuePath = Path.Combine(projectDir, "queue");
 
-            // Print final statistics
-            PrintStatistics(gasStation, electricStation, peopleDinner, robotDinner);
-        }
-
-        private static void ProcessQueueFolder(Semaphore semaphore)
-        {
-            string queueFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "queue");
-            if (!Directory.Exists(queueFolderPath))
+            if (Directory.Exists(queuePath))
             {
-                Console.WriteLine($"Creating queue folder at: {queueFolderPath}");
-                Directory.CreateDirectory(queueFolderPath);
+                Directory.Delete(queuePath, true);
             }
+            Directory.CreateDirectory(queuePath);
+            Console.WriteLine($"Created queue directory at: {queuePath}");
 
-            var jsonFiles = Directory.GetFiles(queueFolderPath, "*.json")
-                .OrderBy(f => int.Parse(Path.GetFileNameWithoutExtension(f).Replace("Car", "")))
-                .ToArray();
-
-            Console.WriteLine($"Found {jsonFiles.Length} files in queue folder");
-
-            foreach (var jsonFile in jsonFiles)
-            {
-                ProcessJsonFile(jsonFile, semaphore);
-            }
-
-            // Process all queued cars
-            semaphore.ServeCars();
-        }
-        private static void ProcessJsonFile(string jsonFile, Semaphore semaphore)
-        {
-            Console.WriteLine($"Processing file: {jsonFile}");
-            var cars = LoadCarsFromJson(jsonFile);
-
-            foreach (var car in cars)
-            {
-                semaphore.GuideCarToStation(car);
-            }
-        }
-
-        public static List<Car> LoadCarsFromJson(string filePath)
-        {
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException($"JSON file not found: {filePath}");
-
-            string jsonContent = File.ReadAllText(filePath);
-            if (string.IsNullOrWhiteSpace(jsonContent))
-                return new List<Car>();
-
+            // Start generator
+            Process? generatorProcess = null;
             try
             {
-                // First try to deserialize as a single car
-                try
+                string pythonPath = Path.Combine(projectDir, "generator.py");
+                Console.WriteLine($"Starting generator at: {pythonPath}");
+
+                var processInfo = new ProcessStartInfo()
                 {
-                    var singleCar = JsonConvert.DeserializeObject<Car>(jsonContent);
-                    if (singleCar != null)
-                        return new List<Car> { singleCar };
-                }
-                catch (JsonReaderException)
+                    FileName = "py",
+                    Arguments = pythonPath,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    WorkingDirectory = projectDir
+                };
+
+                generatorProcess = Process.Start(processInfo);
+
+                if (generatorProcess != null)
                 {
-                    // If single car deserialization fails, try as an array
-                    var cars = JsonConvert.DeserializeObject<List<Car>>(jsonContent);
-                    return cars ?? new List<Car>();
+                    Console.WriteLine("\nPress Enter to stop the generator and begin processing...");
+                    Console.ReadLine();
+
+                    if (!generatorProcess.HasExited)
+                    {
+                        generatorProcess.Kill();
+                        Console.WriteLine("Generator stopped. Starting car processing...\n");
+                    }
                 }
             }
-            catch (JsonException ex)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException($"Error parsing JSON file {filePath}: {ex.Message}");
+                Console.WriteLine($"Error with generator: {ex.Message}");
+                return;
+            }
+            finally
+            {
+                if (generatorProcess != null)
+                {
+                    generatorProcess.Dispose();
+                }
             }
 
-            return new List<Car>();
-        }
+            // Process all cars
+            using (var scheduler = new CarScheduler(semaphore))
+            {
+                await scheduler.ProcessAllCars();
+            }
 
-        private static void PrintStatistics(
-            GasStation gasStation,
-            ElectricStation electricStation,
-            PeopleDinner peopleDinner,
-            RobotDinner robotDinner)
-        {
-            Console.WriteLine("\nFinal Statistics:");
-            Console.WriteLine($"Gas cars served: {gasStation.GetRefueledCount()}");
-            Console.WriteLine($"Electric cars charged: {electricStation.GetChargedCount()}");
-            Console.WriteLine($"People served dinner: {peopleDinner.GetServedCount()}");
-            Console.WriteLine($"Robots served dinner: {robotDinner.GetServedCount()}");
+            Console.WriteLine("Main method complete.");
         }
     }
 }

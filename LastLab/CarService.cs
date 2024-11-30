@@ -1,47 +1,73 @@
-
 public class CarStation
 {
     private readonly List<Car> cars = new List<Car>();
     private readonly IRefuelable refuelStation;
     private readonly IDineable dineStation;
 
-    // Constructor accepts a refuelable and dineable station
     public CarStation(IRefuelable refuelable, IDineable dineable)
     {
         refuelStation = refuelable;
         dineStation = dineable;
     }
 
-    // Add a car to the station and perform necessary actions
+    // AddCar method to add a car to the correct station and update the passenger counts
     public void AddCar(Car car)
     {
         cars.Add(car);
-        Console.WriteLine($"Car with ID {car.Id} added to the station.");
+
+        // Check if the car has people or robots as passengers and add them to the dining station accordingly
+        if (car.Passengers == "PEOPLE")
+        {
+            // Add people to the dining station (PeopleDinner)
+            (dineStation as PeopleDinner)?.AddPeople(1);
+        }
+        else if (car.Passengers == "ROBOTS")
+        {
+            // Add robots to the dining station (RobotDinner)
+            (dineStation as RobotDinner)?.AddRobots(1);
+        }
     }
 
-    // Serve cars at the station based on their type
+    // Declare counters for people and robots
+    private int peopleDining = 0, robotsDining = 0, totalPeople = 0, totalRobots = 0;
+
+    // ServeCars method to serve cars, refuel, and update statistics
     public void ServeCars()
     {
+        // Process all cars in the list
         foreach (var car in cars)
         {
-            if (car.Type == "GAS")
-            {
-                refuelStation.Refuel(car.Id.ToString());
-            }
-            else if (car.Type == "ELECTRIC")
-            {
-                refuelStation.Refuel(car.Id.ToString());
-            }
+            // Refuel the car based on its type
+            refuelStation.Refuel(car.Id.ToString());
 
+            // If the car has passengers and is dining, serve dinner to people or robots
             if (car.IsDining)
             {
-                if (car.Type == "GAS")
+                if (car.Passengers == "PEOPLE")
                 {
-                    dineStation.ServeDinner(car.Id.ToString());
+                    // Serve dinner to people and count them as dining
+                    (dineStation as PeopleDinner)?.ServeDinner(car.Id.ToString());
+                    peopleDining++;
+                    totalPeople++;
                 }
-                else if (car.Type == "ELECTRIC")
+                else if (car.Passengers == "ROBOTS")
                 {
-                    dineStation.ServeDinner(car.Id.ToString());
+                    // Serve dinner to robots and count them as dining
+                    (dineStation as RobotDinner)?.ServeDinner(car.Id.ToString());
+                    robotsDining++;
+                    totalRobots++;
+                }
+            }
+            else
+            {
+                // Count people or robots not dining
+                if (car.Passengers == "PEOPLE")
+                {
+                    totalPeople++;
+                }
+                else if (car.Passengers == "ROBOTS")
+                {
+                    totalRobots++;
                 }
             }
         }
